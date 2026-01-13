@@ -109,3 +109,15 @@ pub fn roll_dice(sides: u8) -> u8 {
     use rand::Rng;
     rand::thread_rng().gen_range(1..=sides)
 }
+
+// Debug: ermoeglicht {:?}-Ausgabe zum Debuggen
+// Clone: erlaubt explizites Kopieren (.clone()) eines Wertes
+// Copy: erlaubt, dass der Typ bitweise kopiert werden kann (impliziert auch Clone)
+// - Kopien passieren implizit bei Zuweisungen/Aufrufen. Nur fuer einfache,
+// sicher kopierbare Typen
+// PartialEq: erlaubt ==/!= Vergleiche zwischen Instanzen
+
+// Ownership / Borrowing:
+//  Falls eine Funktion nichts besitzen muss, nimm Referenzen (&T oder &str)
+//  Falls du etwas mutieren willst, nimm &mut T
+//  Rueckgabewerte, die laenger leben sollen als die Eingaben, muessen den Besitz uebertragen (z.B. String)
