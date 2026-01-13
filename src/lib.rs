@@ -44,10 +44,18 @@ impl Point {
     }
 }
 
+impl fmt::Display for Point {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        // Simple textual representation: (x, y)
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum Shape {
     Circle { center: Point, radius: f64 },
     Rect { top_left: Point, w: f64, h: f64 },
+    Triangle { a: Point, b: Point, c: Point },
 }
 
 impl Shape {
@@ -55,6 +63,15 @@ impl Shape {
         match *self {
             Shape::Circle { center: _, radius } => std::f64::consts::PI * radius * radius,
             Shape::Rect { top_left: _, w, h } => w * h,
+            Shape::Triangle { a, b, c } => {
+                let ax = a.x;
+                let ay = a.y;
+                let bx = b.x;
+                let by = b.y;
+                let cx = c.x;
+                let cy = c.y;
+                ((ax * (by - cy) + bx * (cy - ay) + cx * (ay - by)).abs()) / 2.0
+            }
         }
     }
 }
@@ -93,6 +110,10 @@ pub fn furthest_from_origin<T: Plottable>(items: &[T]) -> Option<&T> {
     })
 }
 
+pub fn min_by_key<T, K: Ord, F: Fn(&T) -> K>(items: &[T], f: F) -> Option<&T> {
+    items.iter().min_by_key(|x| f(x))
+}
+
 // ---------- 5. ERRORS & OPTION/RESULT ----------
 pub fn parse_port(s: &str) -> Result<u16, String> {
     s.parse::<u16>()
@@ -109,6 +130,7 @@ pub fn roll_dice(sides: u8) -> u8 {
     use rand::Rng;
     rand::thread_rng().gen_range(1..=sides)
 }
+
 
 // Debug: ermoeglicht {:?}-Ausgabe zum Debuggen
 // Clone: erlaubt explizites Kopieren (.clone()) eines Wertes
