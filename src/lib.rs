@@ -37,8 +37,7 @@ pub struct Point {
 
 impl Point {
     pub fn distance_to(&self, other: &Point) -> f64 {
-        //TODO: Euclidean distance
-        todo!()
+        ((self.x - other.x).powi(2) + (self.y - other.y).powi(2)).sqrt()
     }
     pub fn origin() -> Self {
         Self { x: 0.0, y: 0.0 }
@@ -53,8 +52,10 @@ pub enum Shape {
 
 impl Shape {
     pub fn area(&self) -> f64 {
-        //TODO: match on self, compute area
-        todo!()
+        match *self {
+            Shape::Circle { center: _, radius } => std::f64::consts::PI * radius * radius,
+            Shape::Rect { top_left: _, w, h } => w * h,
+        }
     }
 }
 
@@ -85,8 +86,11 @@ impl Plottable for (f64, f64) {
 // Return a reference to the item farthest from the origin.
 // Note the explicit lifetime tying the returned reference to the input slice.
 pub fn furthest_from_origin<T: Plottable>(items: &[T]) -> Option<&T> {
-    //TODO: iterate, compute squared distance, track max, return reference
-    todo!()
+    items.iter().max_by(|a, b| {
+        let da = a.x() * a.x() + a.y() * a.y();
+        let db = b.x() * b.x() + b.y() * b.y();
+        da.partial_cmp(&db).unwrap_or(std::cmp::Ordering::Equal)
+    })
 }
 
 // ---------- 5. ERRORS & OPTION/RESULT ----------
